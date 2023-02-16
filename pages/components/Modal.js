@@ -81,6 +81,7 @@ const Modal = ({
                 <div 
                   onClick={() => handleServiceChange(item)}
                   className={styles.basicServiceItem}
+                  key={item + idx}
                 >
                   <input
                     type="checkbox"
@@ -113,7 +114,7 @@ const Modal = ({
           Event Date: {activeDetails.start}
         </div>
         <div>
-          {'Services: '}<ul>{activeDetails.services.map(s => <li>{s}</li>)}</ul>
+          {'Services: '}<ul>{activeDetails.services.map((s, idx) => <li key={s + idx}>{s}</li>)}</ul>
         </div>
       </>
     );

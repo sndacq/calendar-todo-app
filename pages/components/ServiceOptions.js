@@ -3,7 +3,7 @@ import Option from './Option';
 import styles from '../../styles/Home.module.css';
 
 const ServiceOptions = ({
-  items,
+  items = [],
   setItems,
   selectedServices,
   setSelectedServices,
@@ -33,7 +33,7 @@ const ServiceOptions = ({
   const renderCustomServices = () => {
     return items.map((item, idx) => {
       return (
-        <div className={styles.customServiceItem} >
+        <div className={styles.customServiceItem} key={item + idx}>
           <input
             type="checkbox"
             id={item + idx}

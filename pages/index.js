@@ -1,115 +1,120 @@
-import Head from 'next/head';
+import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
 import styles from '../styles/Home.module.css';
 
-export default function Home() {
+import Head from 'next/head';
+import Image from 'next/image';
+
+import Modal from './components/Modal';
+import Calendar from './components/Calendar';
+
+const Home = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [activeDetails, setActiveDetails] = useState({});
+  const [customServices, setCustomServices] = useState([]);
+
+  const todayStr = new Date().toISOString().replace(/T.*$/, '');  
+  const initialEvents = [
+    {
+      id: uuidv4(),
+      title: 'sample event',
+      start: todayStr,
+      services: ['General Cleaning', 'Maintenance'],
+    },
+  ];
+
+  const [events, setEvents] = useState(initialEvents)
+
+  const createEvent = (event) => {
+    const { create, ...rest } = event
+    setEvents([...events, {...rest, id: uuidv4()}]);
+    setActiveDetails({});
+    setModalOpen(false);
+  };
+
+  const updateEvent = (event) => {
+    let eventList = [...events]
+    const eventIdx = eventList.findIndex((item => item.id === event.id));
+    eventList[eventIdx] = event;
+
+    setEvents(eventList);
+    setActiveDetails({});
+    setModalOpen(false);
+  };
+
+  const deleteEvent = () => {
+    setDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    const updatedList = events.filter((item => item.id !== activeDetails.id));
+
+    setEvents(updatedList);
+    setActiveDetails({});
+    setModalOpen(false);
+    setDialogOpen(false);
+  };
+
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Create Next App</title>
+        <title>Calendar Todo App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className="main">
+        <div className="demo-app">
+          <div className="demo-app-main">
+            <Calendar
+              events={events}
+              activeDetails={activeDetails}
+              setActiveDetails={setActiveDetails}
+              setModalOpen={setModalOpen}
+            />
+          </div>
         </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        footer img {
-          margin-left: 0.5rem;
-        }
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-decoration: none;
-          color: inherit;
-        }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
+      </div>
+      <Modal 
+        open={modalOpen}
+        setOpen={setModalOpen}
+        activeDetails={activeDetails}
+        setActiveDetails={setActiveDetails}
+        customServices={customServices}
+        setCustomServices={setCustomServices}
+        createEvent={createEvent}
+        updateEvent={updateEvent}
+        deleteEvent={deleteEvent}
+      />
+      {dialogOpen && (
+        <div className={styles.modal}>
+          <div className={styles.dialogContainer}>
+            <div className={styles.modalHeader}>
+            <Image
+              src="/close.svg"
+              alt="close"
+              className={styles.logo}
+              onClick={() => setDialogOpen(false)}
+              width={20}
+              height={20}
+            />
+        </div>
+        <div className={styles.modalContent}>
+          {'Are you sure you want to delete this item?'}
+        </div>
+        <div className={styles.modalFooter}>
+          <button onClick={() => confirmDelete()}>
+            Yes
+          </button>
+          <button onClick={() => setDialogOpen(false)}>
+            No
+          </button>
+        </div>
+      </div>
     </div>
+      )}
+    </>
   )
 }
+
+export default Home;

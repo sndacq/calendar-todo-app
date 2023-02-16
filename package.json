@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "fix:lint": "next lint --fix"
+    "fix:lint": "next lint -- --fix"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.4",

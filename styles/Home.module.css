@@ -57,3 +57,8 @@
 .basicServiceItem:focus{
   cursor: pointer;
 }
+
+.filePreview {
+  display: flex;
+  flex-direction: column;
+}

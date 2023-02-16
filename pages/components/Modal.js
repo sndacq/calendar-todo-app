@@ -2,6 +2,8 @@ import { useEffect, useCallback, useState } from 'react';
 import Image from 'next/image';
 
 import ServiceOptions from './ServiceOptions';
+import FileUpload from './FileUpload';
+import FilePreview from './FilePreview';
 
 import styles from '../../styles/Home.module.css';
 
@@ -102,7 +104,10 @@ const Modal = ({
               handleServiceChange={handleServiceChange}
             />
           </div>
-
+          <div>
+            Attachments:
+            <FileUpload activeDetails={activeDetails} setActiveDetails={setActiveDetails}/>
+          </div>
         </div>
       </>
     ) : (
@@ -115,6 +120,9 @@ const Modal = ({
         </div>
         <div>
           {'Services: '}<ul>{activeDetails.services.map((s, idx) => <li key={s + idx}>{s}</li>)}</ul>
+        </div>
+        <div>
+          <FilePreview fileList={activeDetails.attachments} />
         </div>
       </>
     );

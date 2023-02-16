@@ -22,6 +22,7 @@ const Home = () => {
       title: 'sample event',
       start: todayStr,
       services: ['General Cleaning', 'Maintenance'],
+      attachments: [],
     },
   ];
 

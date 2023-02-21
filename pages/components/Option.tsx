@@ -1,9 +1,15 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useState, FC } from 'react';
+import Image from 'next/image';
 
 import styles from '../../styles/Home.module.css';
 
-const Option = ({ text, handleSave, handleDelete }) => {
+interface IOptionProps {
+  text: string;
+  handleSave: (s: string, p: string) => void;
+  handleDelete: (s: string) => void;
+}
+
+const Option: FC<IOptionProps> = ({ text, handleSave, handleDelete }) => {
   const [optionText, setOptionText] = useState(text);
   const [edit, setEdit] = useState(false);
 
